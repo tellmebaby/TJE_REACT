@@ -40,7 +40,7 @@ public class BoardController {
     }
     
     @GetMapping("/{no}")
-    public ResponseEntity<?> getOne(@PathVariable int no) {
+    public ResponseEntity<?> getOne(@PathVariable("no") int no) {
         try {
             Board board = boardService.select(no);
             return new ResponseEntity<>(board, HttpStatus.OK);
@@ -52,6 +52,7 @@ public class BoardController {
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody Board board) {
         try {
+            log.info("여기까지 왔어요");
             int result = boardService.insert(board);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -60,7 +61,7 @@ public class BoardController {
     }
     
     @PutMapping()
-    public ResponseEntity<?> update(@RequestBody Board board) {
+    public ResponseEntity<?> update( @RequestBody Board board) {
         try {
             int result = boardService.update(board);
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -70,7 +71,7 @@ public class BoardController {
     }
     
     @DeleteMapping("/{no}")
-    public ResponseEntity<?> destroy(@PathVariable int no) {
+    public ResponseEntity<?> destroy(@PathVariable("no") int no) {
         try {
             int result = boardService.delete(no);
             return new ResponseEntity<>(result, HttpStatus.OK);
