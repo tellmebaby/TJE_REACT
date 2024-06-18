@@ -21,81 +21,110 @@ import com.aloha.todo.service.TodoService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@CrossOrigin(origins = "*")
 @RestController
+@CrossOrigin(origins = "*")         // ⭐ CORS 허용
 @RequestMapping("/todos")
 public class TodoController {
     
     @Autowired
     private TodoService todoService;
     
+    /**
+     * 목록
+     * @return
+     */
     @GetMapping()
-    public ResponseEntity<?> getAll() throws Exception{
+    public ResponseEntity<?> getAll() {
         try {
             List<Todo> todoList = todoService.list();
-            if ( todoList != null ){
-                log.info("리스트 받아와서 여기왔어요 ");
-                
-                return new ResponseEntity<>(todoList, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            return new ResponseEntity<>(todoList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
+    /**
+     * 조회
+     * @param no
+     * @return
+     */
     @GetMapping("/{no}")
-    public ResponseEntity<?> getOne(@PathVariable int no) {
+    public ResponseEntity<?> getOne(@PathVariable("no") Integer no) {
         try {
             Todo todo = todoService.select(no);
-            if ( todo != null ) {
-                return new ResponseEntity<>(todo, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            return new ResponseEntity<>(todo, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
+    /**
+     * 등록
+     * @param todo
+     * @return
+     */
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody Todo todo) throws Exception{
+    public ResponseEntity<?> create(@RequestBody Todo todo) {
         try {
-            int result = todoService.insert(todo);
-            if ( result > 0 ) {
-                return new ResponseEntity<>(result, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            Todo newTodo = todoService.insert(todo);
+            if( newTodo != null ) 
+                return new ResponseEntity<>(newTodo, HttpStatus.OK);
+            else 
+                return new ResponseEntity<>("FAIL", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
+    /**
+     * 수정
+     * @param todo
+     * @return
+     */
     @PutMapping()
     public ResponseEntity<?> update(@RequestBody Todo todo) {
         try {
-            int result = todoService.update(todo);
-            if ( result > 0 ) {
-                return new ResponseEntity<>(result, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            int result = 0;
+
+            // 전체 완료
+            if( todo.getNo() == -1 ) {
+                result = todoService.completeAll();
             }
+            // 그냥 완료
+            else {
+                result = todoService.update(todo);
+            }
+
+            if( result > 0 ) 
+                return new ResponseEntity<>("Update Result SUCCESS", HttpStatus.OK);
+            else 
+                return new ResponseEntity<>("Update Result FAIL", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
+    /**
+     * 삭제
+     * @param no
+     * @return
+     */
     @DeleteMapping("/{no}")
-    public ResponseEntity<?> destroy(@PathVariable int no) {
+    public ResponseEntity<?> destroy(@PathVariable("no") Integer no) {
         try {
-            int result = todoService.delete(no);
-            if ( result > 0 ) {
-                return new ResponseEntity<>(result, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            int result = 0;
+            // 전체 삭제
+            if( no == -1 ) {
+                result = todoService.deleteAll();
             }
+            // 그냥 삭제
+            else {
+                result = todoService.delete(no);
+            }
+            if( result > 0 ) 
+                return new ResponseEntity<>("Delete Result SUCCESS", HttpStatus.OK);
+            else 
+                return new ResponseEntity<>("Delete Result FAIL", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

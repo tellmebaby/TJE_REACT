@@ -6,10 +6,10 @@ import lombok.Data;
 
 @Data
 public class Todo {
- 
     private int no;
     private String name;
     private int status;
-    private Date reg_date;
-    private Date upd_date;
+    private Date regDate;
+    private Date updDate;
+    
 }
