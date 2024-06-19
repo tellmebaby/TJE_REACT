@@ -2,13 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from '../board/css/read.module.css'
 import '../board/css/read.css'
+import * as format from '../../apis/format'
 
 const Read = ({ no , board, fileList, isLoading, onDownload }) => {
 
   const handleDownload = (no, fileName) => {
     onDownload(no, fileName)
   }
-
+  
   return (
     <div className='container'>
       <h1 className="title">게시글 조회</h1>
@@ -63,14 +64,15 @@ const Read = ({ no , board, fileList, isLoading, onDownload }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td colspan={2}>파일</td>
+                    <td colSpan={2}>파일</td>
                   </tr>
                   <tr>
                     <td colSpan={2}>
                       { fileList.map((file) => (
                           <div className="flex-box" key={file.no}>
                             <div className="item">
-                              <span>{file.fileName}</span>
+                              <img src={`/files/img/${file.no}`} alt={file.fileName} />
+                              <span>{file.originName} ({ format.byteToUnit(file.fileSize)})</span>
                             </div>
                             <div className="item">
                               <button className="btn" onClick={ () => handleDownload(file.no, file.originName)}>다운로드</button>

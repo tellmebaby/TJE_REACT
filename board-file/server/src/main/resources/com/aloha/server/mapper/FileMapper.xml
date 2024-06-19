@@ -70,5 +70,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM file
     </select>
 
+        <!-- 파일 선택 삭제 -->
+    <delete id="deleteFiles">
+        DELETE FROM file
+        WHERE no IN (#{no})
+    </delete>
+
 
 </mapper>
