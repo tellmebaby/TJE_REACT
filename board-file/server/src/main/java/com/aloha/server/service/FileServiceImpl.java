@@ -216,5 +216,10 @@ public class FileServiceImpl implements FileService {
         return result;
     }
 
+    @Override
+    public int deleteByParent(Files file) throws Exception {
+        return fileMapper.deleteByParent(file);
+    }
+
     
 }

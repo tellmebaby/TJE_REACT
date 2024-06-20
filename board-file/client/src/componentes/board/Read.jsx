@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import styles from '../board/css/read.module.css'
 import '../board/css/read.css'
 import * as format from '../../apis/format'
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const Read = ({ no , board, fileList, isLoading, onDownload }) => {
 
@@ -59,8 +61,15 @@ const Read = ({ no , board, fileList, isLoading, onDownload }) => {
                   </tr>
                   <tr>
                     <td colSpan={2}>
-                      <textarea cols="40" rows="10" value={board.content} readOnly
-                      className={styles['form-input']}></textarea>
+                      <CKEditor editor={ ClassicEditor }
+                                data={ board.content }           // 조회할 데이터 커텐츠 
+                                disabled={true}
+                                config={{
+                                    toolbar: [],
+                                }}
+                      />
+                      {/* <textarea cols="40" rows="10" value={board.content} readOnly
+                      className={styles['form-input']}></textarea> */}
                     </td>
                   </tr>
                   <tr>

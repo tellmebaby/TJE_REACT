@@ -54,7 +54,7 @@ public class FileController {
      * @return
      */
     @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody Files file) {
+    public ResponseEntity<?> create( Files file) {
         try {
             Files uploadedFile = fileService.upload(file);
             return new ResponseEntity<>(uploadedFile, HttpStatus.OK);
