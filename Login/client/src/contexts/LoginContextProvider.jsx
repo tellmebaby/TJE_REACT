@@ -1,8 +1,9 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import api from '../apis/api'
 import * as auth from '../apis/auth'
+import * as Swal from '../apis/alert'
 
 // 컨텍스트 생성
 export const LoginContext = createContext()
@@ -99,13 +100,19 @@ const LoginContextProvider = ({ children }) => {
                 // 로그인 체크
                 loginCheck()
 
+                Swal.alert("로그인 성공", "메인 화면으로 이동합니다.", "success",
+                    () => { navigate("/") }
+                )
+
                 // 메인 페이지로 이동
-                navigate("/")
+                // navigate("/")
 
             }
 
         } catch (error) {
+            Swal.alert("로그인 실패", "아이디 또는 비밀번호가 일치하지 않습니다.", "error")
             console.log(`로그인 실패`);
+
         }
     }
 
@@ -159,15 +166,36 @@ const LoginContextProvider = ({ children }) => {
     // 🔓 로그아웃
     const logout = () => {
 
-        const check = window.confirm("정말로 로그아웃 하시겠습니까?")
-        if(check){
-            // 로그아웃 세팅
-            logoutSetting()
+        Swal.confirm("로그아웃 하시겠습니다?", "로그아웃을 진행합니다.", "warning",
+            (result) => {
+                // isConfirmed : 확인버튼 클릭 여부
+                if( result.isConfirmed ) {
+                    Swal.alert("로그아웃 성공", "succss")
+                    logoutSetting() // 로그아웃 세팅
+                    navigate("/")   // 메인 페이지로 이동
+                }
+            }
+        )
 
-            // 메인 페이지로 이동
-            navigate("/")
-        }
+        // const check = window.confirm("정말로 로그아웃 하시겠습니까?")
+        // if(check){
+        //     // 로그아웃 세팅
+        //     logoutSetting()
+
+        //     // 메인 페이지로 이동
+        //     navigate("/")
+        // }
     }
+
+
+    // Mount / Update
+    useEffect( () => {
+        // 로그인 체크
+        loginCheck()
+        // 쿠키에서 JWT를 꺼낸다
+        // JWT가 있으면, 서버에 유저정보 사용자 정보를 요청하고 받는다.
+        // 로그인 세팅을 한다. 그로그인 세팅은 컨텍스트의 로그인 여부 사용자 정보 권한정보를 등록
+    },[])
 
   return (
     <LoginContext.Provider value={{isLogin,login,logout}}>
